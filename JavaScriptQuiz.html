@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Quiz App</title>
+    <style>
+        body{
+            background-color: #00ffff;
+            color: #ffffff;
+        }
+        .container{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #000000;
+            font-weight: 700;
+            font-size: x-large
+        }
+        #btn{
+            width: fit-content;
+            border: 1px solid #000000;
+            padding: 5px 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: #4de24d;
+            font-size: xx-large;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        #btn:hover{
+            background-color: #ffffff;
+            color: #000000;
+        }
+        h1{
+            color: #008000;
+            font-size: 70px;
+        }
+        #result{
+            margin-top: 20px;
+            font-size: xx-large;
+            color: #8a2be2;
+            font-weight: 700;
+        }
+        .questions {
+        margin-bottom: 10px;
+        margin-top: 10px; 
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JavaScript Quiz App</h1>
+        <div id="quiz"></div>
+        <button id="btn" class="butt">Submit</button>
+        <div id="result"></div>
+        <button id="restart" class="butt">Restart</button>
+    </div>
+
+    <script>
+        let quiz = document.getElementById('quiz');
+        let btn = document.getElementById('btn');
+        let result = document.getElementById('result');
+        let restart = document.getElementById('restart');
+
+
+        const questionArray = [
+            {
+                Question: "1.What is the Capital Of India?",
+                Answers: {
+                    A: "Delhi",
+                    B: "Kolkata",
+                    C: "Mumbai",
+                    D: "Chennai"
+                },
+                correctAnswer: "A"
+            },
+            {
+                Question: "2.India's Largest River is?",
+                Answers: {
+                    A: "Teesta",
+                    B: "Godabori",
+                    C: "Ganga",
+                    D: "Brahmaputra"
+                },
+                correctAnswer: "C"
+            },
+            {
+                Question: "3.What is the chemical symbol for water?",
+                Answers: {
+                    A: "H2O",
+                    B: "CO2",
+                    C: "NaCl",
+                    D: "O2"
+                },
+                correctAnswer: "A"
+            },
+            {
+                Question: "4.Who was the first President of the United States?",
+                Answers: {
+                    A: "Thomas Jefferson",
+                    B: "George Washington",
+                    C: "Abraham Lincoln",
+                    D: "John Adams"
+                },
+                correctAnswer: "B"
+            },{
+                Question: "5.Which sport is associated with Wimbledon?",
+                Answers: {
+                    A: "Tennis",
+                    B: "Golf",
+                    C: "Soccer",
+                    D: "Cricket"
+                },
+                correctAnswer: "A"
+            }
+        ]
+
+        let quizCompleted = false;
+        restart.disabled = true;
+        restart.style.display = "none";
+        function buildQuiz(){
+            const output = [];
+
+            questionArray.forEach((currentQuestion , questionNumber)=>{
+                const answers = [];
+
+                for(letter in currentQuestion.Answers){
+                    answers.push(
+                        `<label><input type="radio" name="questions${questionNumber}" value=${letter} />${letter} : ${currentQuestion.Answers[letter]}  
+                        <label/>`
+                    )
+                }
+                //console.log(answers);
+
+                output.push(
+                    `<div class="questions">
+                    ${currentQuestion.Question}</div>
+                    <div class="answers">
+                    ${answers.join(' ')}</div>`
+                )
+            });
+            //console.log(output);
+            quiz.innerHTML = output.join(' ');
+        }
+
+        function showResult(){
+            const answersContainers = quiz.querySelectorAll('.answers');
+
+            let correct = 0;
+
+            questionArray.forEach((currentQuestion,questionNumber)=>{
+                const answerContainer = answersContainers[questionNumber];
+
+                const selector = `input[name=questions${questionNumber}]:checked`
+
+                const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+                if(userAnswer === currentQuestion.correctAnswer){
+                    correct++;
+                    answersContainers[questionNumber].style.color = "green";
+                }else{
+                    answersContainers[questionNumber].style.color = "red";
+                }
+            })
+            //console.log(correct);
+            result.innerHTML = `${correct} Out Of ${questionArray.length}`
+            quizCompleted = true;
+            btn.disabled = true;
+            restart.disabled = false;
+            restart.style.display="block";
+            restart.style.backgroundColor = "yellow";
+            restart.style.padding = "7px";
+            restart.style.borderRadius = "5px";
+            restart.style.fontSize = "xx-large";
+            restart.style.fontWeight = "700";
+            restart.style.cursor = "pointer";
+        }
+
+        function reStartQuiz(){
+            quizCompleted = false;
+            btn.disabled = false;
+            restart.disabled = true;
+            result.innerHTML = '';
+            buildQuiz();
+        }
+
+        buildQuiz();
+        btn.addEventListener('click',showResult);
+        restart.addEventListener('click',reStartQuiz);
+
+    </script>
+</body>
+</html>
